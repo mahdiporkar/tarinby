@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Logo } from '../components/tarinby/Logo';
 import { GradientButton } from '../components/tarinby/GradientButton';
 import { Stepper } from '../components/tarinby/Stepper';
 import { RTLInput, RTLSelect, RTLTextarea } from '../components/tarinby/RTLInput';
 import { ArrowRight, Check } from 'lucide-react';
 
-export default function NeedRegistration() {
-  const router = useRouter();
+interface NeedRegistrationProps {
+  onBack: () => void;
+  onComplete: () => void;
+}
+
+export function NeedRegistration({ onBack, onComplete }: NeedRegistrationProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
   
@@ -38,12 +41,12 @@ export default function NeedRegistration() {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     } else {
-      router.push('/');
+      onBack();
     }
   };
 
   const handleComplete = () => {
-    router.push('/opportunities');
+    onComplete();
   };
 
   if (showConfirmation) {

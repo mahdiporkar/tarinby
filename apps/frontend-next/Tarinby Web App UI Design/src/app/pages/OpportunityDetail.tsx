@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Logo } from '../../components/tarinby/Logo';
-import { GradientButton } from '../../components/tarinby/GradientButton';
+import { Logo } from '../components/tarinby/Logo';
+import { GradientButton } from '../components/tarinby/GradientButton';
 import { ArrowRight, CircleCheck, TriangleAlert, TrendingUp, MessageCircle } from 'lucide-react';
 
-export default function OpportunityDetail() {
-  const router = useRouter();
-  const handleBack = () => router.push('/opportunities');
+interface OpportunityDetailProps {
+  onBack: () => void;
+}
+
+export function OpportunityDetail({ onBack }: OpportunityDetailProps) {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showPaywallModal, setShowPaywallModal] = useState(false);
 
@@ -32,7 +33,7 @@ export default function OpportunityDetail() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
-          onClick={handleBack}
+          onClick={onBack}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
           dir="rtl"
         >

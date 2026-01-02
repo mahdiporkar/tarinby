@@ -1,18 +1,17 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import { Logo } from '../components/tarinby/Logo';
 import { GradientButton } from '../components/tarinby/GradientButton';
 import { CircleCheck, Target, Zap, Shield, Clock, TrendingDown } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import heroNetwork from 'figma:asset/3ea704108b904285785cda3c0c6cb826b9b66fac.png';
+import heroBrain from 'figma:asset/c4c7779091a88f803a10fb1123d8f2ff650d5dc5.png';
 
-export default function Home() {
-  const router = useRouter();
-  const heroNetwork = '/assets/3ea704108b904285785cda3c0c6cb826b9b66fac.png';
-  const heroBrain = '/assets/c4c7779091a88f803a10fb1123d8f2ff650d5dc5.png';
+interface LandingPageProps {
+  onRegisterNeed: () => void;
+  onViewOpportunities: () => void;
+}
 
-  const handleRegisterNeed = () => router.push('/need');
-  const handleViewOpportunities = () => router.push('/opportunities');
-  const handleLogin = () => router.push('/login');
+export function LandingPage({ onRegisterNeed, onViewOpportunities }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -21,13 +20,10 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <Logo size="md" />
             <div className="flex items-center gap-4">
-              <button
-                onClick={handleLogin}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 ورود
               </button>
-              <GradientButton variant="primary" size="sm" onClick={handleRegisterNeed}>
+              <GradientButton variant="primary" size="sm" onClick={onRegisterNeed}>
                 ثبت نیاز
               </GradientButton>
             </div>
@@ -65,10 +61,10 @@ export default function Home() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center" dir="rtl">
-            <GradientButton variant="primary" size="lg" onClick={handleRegisterNeed}>
+            <GradientButton variant="primary" size="lg" onClick={onRegisterNeed}>
               ثبت نیاز
             </GradientButton>
-            <GradientButton variant="secondary" size="lg" onClick={handleViewOpportunities}>
+            <GradientButton variant="secondary" size="lg" onClick={onViewOpportunities}>
               دیدن فرصت‌های بازار
             </GradientButton>
           </div>
@@ -207,7 +203,7 @@ export default function Home() {
             همین حالا نیاز خودتون رو ثبت کنید
           </p>
           <button
-            onClick={handleRegisterNeed}
+            onClick={onRegisterNeed}
             className="bg-white text-primary px-8 py-4 rounded-xl font-medium hover:bg-white/90 transition-colors shadow-xl"
           >
             شروع کنید

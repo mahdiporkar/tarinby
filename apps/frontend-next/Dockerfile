@@ -4,8 +4,9 @@ ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY package.json ./
 RUN npm install
-COPY next.config.js tsconfig.json next-env.d.ts ./
+COPY next.config.js tsconfig.json next-env.d.ts postcss.config.js ./
 COPY pages ./pages
+COPY components ./components
 COPY styles ./styles
 COPY lib ./lib
 RUN npm run build

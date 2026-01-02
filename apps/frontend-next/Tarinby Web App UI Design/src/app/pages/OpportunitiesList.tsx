@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Logo } from '../../components/tarinby/Logo';
-import { OpportunityCard } from '../../components/tarinby/OpportunityCard';
-import { GradientButton } from '../../components/tarinby/GradientButton';
+import { Logo } from '../components/tarinby/Logo';
+import { OpportunityCard } from '../components/tarinby/OpportunityCard';
+import { GradientButton } from '../components/tarinby/GradientButton';
 import { ArrowRight, SlidersHorizontal } from 'lucide-react';
 
-export default function OpportunitiesList() {
-  const router = useRouter();
-  const handleBack = () => router.push('/');
-  const handleViewDetail = (id: number) => router.push(`/opportunities/${id}`);
-  const handleCreateNeed = () => router.push('/need');
+interface OpportunitiesListProps {
+  onBack: () => void;
+  onViewDetail: (id: number) => void;
+}
+
+export function OpportunitiesList({ onBack, onViewDetail }: OpportunitiesListProps) {
   const [showFilters, setShowFilters] = useState(false);
 
   // Mock data
@@ -83,7 +83,7 @@ export default function OpportunitiesList() {
               <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 نیازهای من
               </button>
-              <GradientButton variant="primary" size="sm" onClick={handleCreateNeed}>
+              <GradientButton variant="primary" size="sm" onClick={onBack}>
                 ثبت نیاز جدید
               </GradientButton>
             </div>
@@ -94,7 +94,7 @@ export default function OpportunitiesList() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
-          onClick={handleBack}
+          onClick={onBack}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
           dir="rtl"
         >
@@ -188,7 +188,7 @@ export default function OpportunitiesList() {
             <OpportunityCard
               key={opp.id}
               {...opp}
-              onViewDetails={() => handleViewDetail(opp.id)}
+              onViewDetails={() => onViewDetail(opp.id)}
               onRequestContact={() => {}}
             />
           ))}
