@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BUYER
+  SELLER
+}
+
+enum Category {
+  PROPERTY
+  CAR
+  DIGITAL
+}
+
+enum NeedStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum ListingStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum MatchStatus {
+  NEW
+  OFFER_SENT
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  role      Role
+  phone     String   @unique
+  createdAt DateTime @default(now())
+
+  needs     Need[]
+  listings  Listing[]
+}
+
+model Need {
+  id         String     @id @default(uuid())
+  userId     String
+  category   Category
+  city       String
+  district   String
+  budgetMin  Int
+  budgetMax  Int
+  attributes Json
+  status     NeedStatus
+  createdAt  DateTime   @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  matches Match[]
+}
+
+model Listing {
+  id         String        @id @default(uuid())
+  userId     String
+  category   Category
+  city       String
+  district   String
+  price      Int
+  attributes Json
+  status     ListingStatus
+  createdAt  DateTime      @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  matches Match[]
+}
+
+model Match {
+  id         String      @id @default(uuid())
+  needId     String
+  listingId  String
+  matchScore Int
+  priceScore Int
+  riskScore  Int         @default(0)
+  status     MatchStatus @default(NEW)
+  createdAt  DateTime    @default(now())
+
+  need    Need    @relation(fields: [needId], references: [id])
+  listing Listing @relation(fields: [listingId], references: [id])
+
+  @@unique([needId, listingId])
+}

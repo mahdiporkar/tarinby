@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tarinby-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tarinby-net
+
+  backend:
+    build:
+      context: ./apps/backend-nest
+    container_name: tarinby-backend
+    restart: unless-stopped
+    env_file:
+      - ./apps/backend-nest/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3007:3007"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://localhost:3007/health',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1));\""
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tarinby-net
+
+  frontend:
+    build:
+      context: ./apps/frontend-next
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    container_name: tarinby-frontend
+    restart: unless-stopped
+    env_file:
+      - ./apps/frontend-next/.env
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - tarinby-net
+
+  admin:
+    build:
+      context: ./apps/admin-antd
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL}
+        REACT_APP_ADMIN_KEY: ${REACT_APP_ADMIN_KEY}
+    container_name: tarinby-admin
+    restart: unless-stopped
+    env_file:
+      - ./apps/admin-antd/.env
+    depends_on:
+      - backend
+    ports:
+      - "3010:3010"
+    networks:
+      - tarinby-net
+
+networks:
+  tarinby-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
